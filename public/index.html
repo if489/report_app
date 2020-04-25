@@ -1,0 +1,71 @@
+<html>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+
+      var entriesElement = $("#list");
+
+      var appendReports = function(data) {
+        entriesElement.empty();
+        $.each(data["reports"], function(key, val) {
+          entriesElement.append()
+
+          entriesElement.append("<div id='" + val["id"] + "' class='m-2 p-3 border rounded'>");
+          var mainDiv = $("#" + val["id"] + "");
+
+          mainDiv.append("<div>"+ "Id: " + val["id"] + "</div>");
+          mainDiv.append("<div>"+ "State: " + val["state"] + "</div>");
+          mainDiv.append("<div>"+ "Message: " + val["payload"]["message"] + "</div>");
+          mainDiv.append("<div>"+ "Type: " + val["payload"]["report_type"] + "</div>");
+          mainDiv.append("<button class='btn btn-secondary m-1 block' id='"+ val["id"]+"' class='block'>" + "Block" + "</button>");
+          mainDiv.append("<button class='btn btn-secondary m-1 resolve' id='"+ val["id"]+"' class='resolve'>" + "Resolve" + "</button>");
+          mainDiv.append("<button class='btn btn-link m-1 btn-sm'>" + "Details" + "</button>");
+          mainDiv.append("</div>");
+        });
+      }
+
+      $.getJSON("/reports", appendReports)
+
+      $(document).on('click', '.block', function(e){
+        e.stopPropagation();
+        $.ajax({
+          url: "/reports/block/"+e.target.id,
+          type: "POST",
+          success: function(result){
+            $.getJSON("/reports", appendReports)
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log("Status: ", textStatus, "Error: ", errorThrown);
+          }
+        })
+      });
+
+      $(document).on('click', '.resolve', function(e){
+        const data = '{"ticketState": "CLOSED"}';
+        e.stopPropagation();
+        $.ajax({
+          url: "/reports/"+e.target.id,
+          type: "PUT",
+          data: data,
+          dataType: "text",
+          success: function(result){
+            $.getJSON("/reports", appendReports)
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log("Status: ", textStatus, "Error: ", errorThrown);
+          }
+        })
+      });
+  });
+  </script>
+<body>
+
+<div class="container" style="margin-left: 100px;margin-top: 30px; max-width: 650px;">
+  <h1>Reports</h1>
+  <div id="list">
+  </div>
+</div>
+
+</body>
+</html>

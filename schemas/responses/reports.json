@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "size",
+        "reports"
+    ],
+    "properties": {
+        "size": { "type": "integer"},
+        "reports": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id", "source", "source_identity_id", "reference", "state", "payload",
+                    "created_at", "updated_at"
+                ],
+                "properties": {
+                    "id":                 { "type": "string" },
+                    "source":             { "type": "string" },
+                    "source_identity_id": { "type": "string" },
+                    "reference":          { "type": "object" },
+                    "state":              { "type": "string" },
+                    "payload":            { "type": "object" },
+                    "created_at":         { "type": "string", "format": "date-time" },
+                    "updated_at":         { "type": "string", "format": "date-time" }
+                }
+            }
+        }
+    }
+}

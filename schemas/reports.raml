@@ -1,0 +1,70 @@
+#%RAML 0.8
+title: Reports
+baseUriParameters:
+  host:
+    enum: [ 10.1.21.9, localhost ]
+baseUri: http://{host}:3000/
+protocols: [ HTTP ]
+mediaType: application/json
+
+/reports:
+  get:
+    description: >
+      Returns all the reports with the state open.
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schemas/responses/reports.json
+            example: !include schemas/examples/responses/reports.js
+      500:
+        body:
+          application/json:
+            schema: !include schemas/responses/errors.json
+            example: !include schemas/examples/errors.json
+
+/reports/block/{reportId}:
+  uriParameters:
+    reportId:
+      description: determines which report id should be blocked
+      type: uuid
+      example: 0103e005-b762-485f-8f7e-722019d4f302
+  post:
+    description: >
+      Sets the state of the report to blocked.
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schemas/responses/report.json
+            example: !include schemas/examples/report.json
+      500:
+        body:
+          application/json:
+            schema: !include schemas/responses/errors.json
+            example: !include schemas/examples/errors.json
+
+/reports/{reportID}:
+  uriParameters:
+    reportId:
+      description: determines which report id should be blocked
+      type: uuid
+      example: 0103e005-b762-485f-8f7e-722019d4f302
+  put:
+    description: >
+      Sets the state of the report to resolved.
+    body:
+      application/json:
+        schema: !include schemas/requests/ticket_state_request.json
+        example: !include schemas/examples/ticket_state_request.json
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include schemas/responses/report.json
+            example: !include schemas/examples/report.json
+      500:
+        body:
+          application/json:
+            schema: !include schemas/responses/errors.json
+            example: !include schemas/examples/errors.json
